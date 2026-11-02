@@ -4,4 +4,7 @@ jobs:
   hello: 
     runs-on: ubuntu-latest
     steps:
-      - run: echo " Branche ${{ github.ref_name }}"
+      - name: Information du commit
+      - run: 
+          echo " Branche ${{ github.ref_name }}"
+          echo " Branche ${{ github.ref_name }}"
