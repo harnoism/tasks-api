@@ -5,6 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Information du commit
-      - run: | 
-          echo " Branche ${{ github.ref_name }}"
-          echo " Branche ${{ github.ref_name }}"
+        run: | 
+          echo "Branche : ${{ github.ref_name }}"
+          echo "Auteur : ${{ github.actor }}"
