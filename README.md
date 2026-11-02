@@ -1,4 +1,4 @@
-![CI](https://github.com)
+[![CI](https://github.com/harnoism/tasks-api/actions/workflows/ci.yml/badge.svg)](https://github.com/harnoism/tasks-api/actions/workflows/ci.yml)
 
 # tasks-api : fil rouge du cours GitOps & CI/CD
 
