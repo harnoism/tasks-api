@@ -7,9 +7,6 @@ jobs:
       - name: Recuperer le code
       - uses: actions/checkout@v6
 
-      - name: Recuperer le code
-      - uses: actions/checkout@v6
-
       - name: Installer Python 3.12
         uses: actions/setup-python@v5
         with:
