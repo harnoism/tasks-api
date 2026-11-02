@@ -1,3 +1,4 @@
+![CI](https://github.com)
 # tasks-api : fil rouge du cours GitOps & CI/CD
 
 Petite API Flask de gestion de tâches. On ne travaille pas sur l'application elle-même :
