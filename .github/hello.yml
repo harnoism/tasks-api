@@ -1,0 +1,11 @@
+name: Hello
+on: push
+jobs: 
+  hello: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Afficher message
+      - run: echo " Hello world"
+
+      - name: Les informations de la branch
+      - run: echo " La branche actuelle ${{ github.ref_name }}"
