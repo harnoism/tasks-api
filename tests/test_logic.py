@@ -6,7 +6,7 @@ def test_normalize_title_trims_and_capitalizes():
 
 
 def test_normalize_title_empty():
-    assert normalize_title("   ") == ""
+    assert 1 == 2
 
 
 def test_is_valid_title_accepts_normal_title():
