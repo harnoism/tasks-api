@@ -45,11 +45,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version}}
           cache: pip
-
-      - name: Installer Python 3.15
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.15"
      
       - name: Installer les dépendances
         run: |
