@@ -14,9 +14,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.15'
+          cache: pip
 
       - name: Installer les dependances
         run: |
@@ -31,9 +32,19 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: 
+      python-version: [ "3.11", "3.12", "3.13" ]
     steps:
       - name: Recuperer le code
         uses: actions/checkout@v4
+
+      - name: Installer Python de la matrix
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version}}
+          cache: pip
 
       - name: Installer Python 3.15
         uses: actions/setup-python@v5
@@ -47,5 +58,12 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Lancer les tests
-        run: pytest --cov=app --cov-fail-under=80
+        run: pytest --cov=app --cov-fail-under=80 --cov-report=xml
+
+      - name: Publier l'artefact de couverture
+        if: matrix.pyhton-version == '3.15'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: coverage.xml
       
