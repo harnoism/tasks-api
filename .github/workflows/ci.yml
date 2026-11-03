@@ -1,10 +1,10 @@
-name: CI Quality & Tests
+name: CI
 
 on: 
   push:
-    branches: [ main, master ]
+    branches: [ main, master, tp2 ]
   pull_request: 
-    branches: [ main, master ]
+    branches: [ main, master, tp2 ]
 
 jobs:
   lint:
