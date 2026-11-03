@@ -56,7 +56,7 @@ jobs:
         run: pytest --cov=app --cov-fail-under=80 --cov-report=xml
 
       - name: Publier l'artefact de couverture
-        if: matrix.pyhton-version == '3.12'
+        if: ${{ matrix.pyhton-version == '3.12' }}
         uses: actions/upload-artifact@v7
         with:
           name: coverage-report
