@@ -1,20 +1,65 @@
 name: CI
-on: push
+
+on: 
+  push:
+    branches: [ main, master, tp2 ]
+  pull_request: 
+    branches: [ main, master, tp2 ]
+
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Recuperer le code
-        uses: actions/checkout@v6
+      - name: recuperer le code
+        uses: actions/checkout@v4
 
-      - name: Installer Python 3.15
+      - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: "3.15"
+          python-version: '3.15'
+          cache: pip
+
+      - name: Installer les dependances
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black
+
+      - name: Run Black Check
+        run: black --check .
+
+      - name: Run Flake8
+        run: flake8 .
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: 
+        python-version: [ "3.11", "3.12", "3.13" ]
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Python de la matrix
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version}}
+          cache: pip
      
       - name: Installer les dépendances
-        run: pip install -r requirements-dev.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Lancer les tests
-        run: pytest
+        run: pytest --cov=app --cov-fail-under=80 --cov-report=xml
+
+      - name: Publier l'artefact de couverture
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: coverage.xml
+
       
