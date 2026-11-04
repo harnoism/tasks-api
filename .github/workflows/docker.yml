@@ -1,0 +1,82 @@
+name: dockers
+
+on: 
+  push:
+    branches: 
+      - main
+    tags: 
+      -'v*'
+    workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version}}
+          cache: pip
+     
+      - name: Installer les dépendances
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Lancer les tests
+        run: pytest --cov=app --cov-fail-under=80 --cov-report=xml
+
+build:
+  needs: test
+  runs-on: ubuntu-latest
+  permissions:
+    packages: write
+    content: read
+  steps:
+    - name: Recuperer le code
+      uses: actions/checkout@v4
+
+    - name: owner name
+      id: repo_owner
+      run: |
+        echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
+    - name: Calculate app version
+      id: app_version
+      run: |
+        if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+          echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+        else
+          echo "version=dev" >> $GITHUB_OUTPUT
+        fi
+
+    - name: docker buildx
+      uses: docker/setup-buildx-action@v4
+
+    - name: docker metadata
+      id: meta
+      uses: docker/metadata-action@v6
+      with:
+        images: ghcr.io/${{ steps.repo_owner.outputs.owner }}/tasks-api
+        tags: |
+          type=sha,format=short
+          type=semver,pattern={{version}}
+        
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v7
+      with:
+        context: .
+        push: true
+        tags: ${{ meta.outputs.tags }}
+        labels: ${{ meta.outputs.labels }}
+        build-args: |
+          APP_VERSION=${{ steps.app_version.outputs.version }}
+
+
+
+
+      
