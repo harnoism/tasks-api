@@ -102,8 +102,8 @@ jobs:
 
       - name: Simuler le déploiement Staging (Run conteneur)
         run: |
-          docker run -d --name tasks-api-staging -p 8000:8000 ghcr.io/${{ steps.repo_owner.outputs.owner }}/tasks-api:sha-${{ github.sha }}
-
+          SHA_SHORT=$(echo "${{ github.sha }}" | cut -c1-7)
+          docker run -d --name tasks-api-staging -p 8000:8000 ghcr.io/${{ steps.repo_owner.outputs.owner }}/tasks-api:sha-$SHA_SHORT
       - name: Test de fumée (Smoke test)
         run: |
           for i in $(seq 1 15); do
@@ -132,7 +132,7 @@ jobs:
 
       - name: Simuler le déploiement Staging (Run conteneur)
         run: |
-          docker run -d --name tasks-api-staging -p 8000:8000 ghcr.io/${{ steps.repo_owner.outputs.owner }}/tasks-api:sha-${{ github.sha }}
+          docker run -d --name tasks-api-prod -p 8000:8000 ghcr.io/${{ steps.repo_owner.outputs.owner }}/tasks-api:${{ github.ref_name }}
 
       - name: Test de fumée (Smoke test)
         run: |
