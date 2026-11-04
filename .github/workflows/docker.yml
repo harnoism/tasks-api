@@ -123,6 +123,15 @@ jobs:
         run: |
           echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
 
+      - name: Calculate app version
+        id: app_version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+          else
+            echo "version=dev" >> $GITHUB_OUTPUT
+          fi
+
       - name: Connexion au registre GHCR
         uses: docker/login-action@v4
         with:
@@ -132,8 +141,7 @@ jobs:
 
       - name: Simuler le déploiement Staging (Run conteneur)
         run: |
-          docker run -d --name tasks-api-prod -p 8000:8000 ghcr.io/${{ steps.repo_owner.outputs.owner }}/tasks-api:${{ github.ref_name }}
-
+          docker run -d --name tasks-api-prod -p 8000:8000 ghcr.io/${{ steps.repo_owner.outputs.owner }}/tasks-api:${{ steps.app_version.outputs.version }}
       - name: Test de fumée (Smoke test)
         run: |
           for i in $(seq 1 15); do
