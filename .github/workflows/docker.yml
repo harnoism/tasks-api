@@ -165,7 +165,7 @@ jobs:
         - name: Récupérer le dépôt de configuration
           uses: actions/checkout@v6
           with:
-            repository: <compte>/tasks-config
+            repository: harnoism/tasks-config
             token: ${{ secrets.CONFIG_REPO_TOKEN }}
             path: config
 
